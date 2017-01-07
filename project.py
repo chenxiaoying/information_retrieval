@@ -4,6 +4,7 @@ import gzip
 import nltk
 from nltk.tokenize import RegexpTokenizer
 from random import shuffle
+import collections, itertools
 
 ## read data from dataset
 def read_review():
@@ -33,7 +34,7 @@ def get_data(data):
 			rev[rating] = [token]
 		
 		n +=1
-		if n >= 500:
+		if n >= 10000:
 			break
 			
 	return rev,tokens
@@ -59,6 +60,8 @@ def pos_tagger(tokens):
 			feat = dict([(word, True) for word in info])
 			featss.append((feat,str(lines)))
 			
+	#print(featss)
+			
 	#print(tagged_info)
 	return featss
 	
@@ -82,13 +85,56 @@ def split_train_test(feats, split=0.9):
 def train(train_feats):
 	classifier = nltk.classify.DecisionTreeClassifier.train(train_feats, binary=True, entropy_cutoff=0.8, depth_cutoff=5, support_cutoff=300)
 	return classifier
-	
-	
 
-dataset = list(read_review())
-reviews,tokens = get_data(dataset)
-featss = pos_tagger(reviews)
-train_rev, test_set = split_train_test(featss)
-#print(train_rev)
-classifier = train(train_rev)
-print(nltk.classify.accuracy(classifier, test_set))
+def precision_recall(classifier, testfeats):
+	refsets = collections.defaultdict(set)
+	testsets = collections.defaultdict(set)
+	
+	for i, (feats, label) in enumerate(testfeats):
+		refsets[label].add(i)
+		observed = classifier.classify(feats)
+		testsets[observed].add(i)
+	
+	precisions = {}
+	recalls = {}
+	
+	for label in classifier.labels():
+		precisions[label] = nltk.metrics.precision(refsets[label], testsets[label])
+		recalls[label] = nltk.metrics.recall(refsets[label], testsets[label])
+	
+	return precisions, recalls
+
+# prints accuracy, precision and recall, f-score
+def evaluation(classifier, test_feats, score):
+	print ("\n##### Evaluation...")
+	print("  Accuracy: %f" % nltk.classify.accuracy(classifier, test_feats))
+	precisions, recalls = precision_recall(classifier, test_feats)  
+	
+	f_scores = {}
+
+	print(" |---------------|---------------|---------------|---------------|")
+	print(" |%-15s|%-15s|%-15s|%-15s|" % ("score","precision","recall","F-measure"))
+	print(" |---------------|---------------|---------------|---------------|")
+	for score,scores in zip(precisions,recalls):
+		if precisions[score] is not None and recalls[score] is not None:
+			f_score = (2 * precisions[score] * recalls[score]) / (precisions[score] + recalls[score])
+			f_scores[score] = f_score
+		try:	
+			print(" |%-15s|%-15s|%-15s|%-15s|" % (score,precisions[score],recalls[score],f_scores[score]))
+			print(" |---------------|---------------|---------------|---------------|")
+		except KeyError:
+			print(" |%-15s|%-15s|%-15s|%-15s|" % (score,precisions[score],recalls[score],'f_score'))
+			print(" |---------------|---------------|---------------|---------------|")
+			
+			
+
+if __name__ == "__main__":
+	dataset = list(read_review())
+	reviews,tokens = get_data(dataset)
+	score = []
+	for i in reviews:
+		score.append(i)
+	featss = pos_tagger(reviews)
+	train_rev, test_set = split_train_test(featss)
+	classifier = train(train_rev)
+	evaluation(classifier,test_set,score)
