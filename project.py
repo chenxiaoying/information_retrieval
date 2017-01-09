@@ -172,8 +172,11 @@ def evaluation(classifier, test_feats, score):
 			print(" |%-15s|%-15s|%-15s|%-15s|" % (score,precisions[score],recalls[score],'f_score'))
 			print(" |---------------|---------------|---------------|---------------|")
 			
-		
-		
+# show informative features
+def analysis(classifier):
+	print("\n##### Analysis...")
+	classifier.show_most_informative_features(10)
+
 if __name__ == "__main__":
 	"""
 	#########read reviews
@@ -205,6 +208,7 @@ if __name__ == "__main__":
 		evaluation(classifier,test_set,score)
 		accuracy = nltk.classify.accuracy(classifier, test_set)
 		acc.append(accuracy)
+		analysis(classifier)
 	for i in acc:
 		print(i)
 	average = sum(acc) / len(acc)
