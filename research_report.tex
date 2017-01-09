@@ -1,0 +1,31 @@
+\documentclass{article}
+\usepackage[round]{natbib}
+
+\title{Research Report}
+\date{11-01-2017}
+\author{Xiaoying Chen (s2714140),}
+
+\begin{document}
+ \maketitle
+
+\section{Introduction}
+Online shopping become more popular in recent years. Customers buy products on the internet at wherever they are, and the products are sent to them. After the purchasing, people can leave their comments and ratings about the products on the products pages. This reviews represent the opinion of the customers about the products. These opinion can be positive or negative about the products. We will analyze the online shopping reviews, and predict the recommendation of the product by the reviewer base on the review with the most effective method of classification. In this report, we will first describe some relevant work to this research. We will introduce our research material and methods we used for the research, and then discuss our experiment results. 
+
+\section{Literature review}
+\citet{turney2002thumbs} developed an algorithm that classify the positive and negative reviews. The principle of the algorithm was to classify the reviews based on the average semantic orientation of the phrases that extracted from the reviews, which contained the adjectives (e.g., excellent and good) or adverbs. The average accuracy of using this method on reviews differed from every category. The average accuracy of 410 reviews from Epinions was 74\%. The movie reviews were harder to classify, the accuracy was 66\%. While the accuracy for automobiles and banks were about 80\% to 84\%. The research of \citet{dave2003mining} provided different approaches for feature extraction and scoring, an example feature extraction technique was divided the reviews into n-grams. The experiment of \citet{dang2010lexicon} used Stanford POS tagger to extract the adjectives, adverbs, and the verbs. After that, they used the SentiWordNet to calculated positive, negative, and objective scores for each extracted words separately. When negative score of the word was greater than positive score, considered the word as  negative feature. The results of this experiment showed that the accuracy of sentiment classification increased by applying this method.
+
+\section{Material}
+For this research we used the products reviews on Amazon. Since there are great number of products on amazon, and the corresponding review dataset are too large, we will only use the review dataset for the product category Musical instruments for this research, the dataset comes from \citet{mcauley2015image}. The information contains in the dataset are: reviewer ID, product ID, the name of the reviewer, the review, the average rating of the product, the summary of the review, and the time of the review. Duplicate reviews are removed from the dataset, and only the reviews for the products with more than 5 reviews are included, there are 10261 reviews in the dataset. We will not using all information from the dataset, two information we used for this research is: review text and the rating that the reviewer gave to the product. In order to process the dataset, we use Python and Natural Language Toolkit (NLTK). 
+
+\section{Methodology}
+As earlier mentioned, we use the review text and the rating of the product in this research. The ratings that reviewers gave to the products on Amazon were from 1 to 5. We divided the rating into positive and negative category. When the rating is 4 or 5, we consider it as positive. The other ratings were categoried as negative. Since the reviews were sentences, we had to pre-process it before classification. The approaches of pre-processing we ued were tokenisation and part-of-speech tagging. The classifier we used in this experiment were Naive Bayes and Decision Tree classifier.
+\subsection{Reviews pre-processing}
+
+
+\section{Evaluation}
+
+
+\bibliographystyle{plainnat}
+\bibliography{bibtex_file}
+
+\end{document}
